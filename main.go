@@ -11,6 +11,13 @@ import (
 
 var (
 	telegramBotToken string
+	mainMenu = tgbotapi.NewReplyKeyboard(
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton("Start"),
+			tgbotapi.NewKeyboardButton("Start"),
+			tgbotapi.NewKeyboardButton("Start"),
+		),
+	)
 	)
 
 func init() {
@@ -41,7 +48,8 @@ func start_bot(token string) tgbotapi.BotAPI {
 	log.Printf("Authorized with acc %s", bot.Self.UserName)
 	return *bot
 }
-
+// TODO: нужно сделать так что бы апдейт кончался, что бы  не надо было каждый раз тыкать /menu для обновления кнопок
+// TODO: сделать функционал для кнопок, что бы кнопка логин принимала инфу от пользака, юзернейм и пасс
 func get_updates(bot tgbotapi.BotAPI){
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -65,6 +73,9 @@ func get_updates(bot tgbotapi.BotAPI){
 			case "start":
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Что хочешь сделать?")
 				msg.ReplyMarkup = CreateButtons()
+			case "menu":
+				msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Главное меню")
+				msg.ReplyMarkup = mainMenu
 			default:
 				msg.Text = "Напиши /start что бы выбрать действие"
 			}

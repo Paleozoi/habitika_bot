@@ -2,7 +2,7 @@ package main
 
 import tgbotapi "github.com/Syfaro/telegram-bot-api"
 
-type User struct{
+type User struct {
 	Username string
 	Password string
 }
