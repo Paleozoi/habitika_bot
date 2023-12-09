@@ -26,18 +26,23 @@ func init() {
 
 func main() {
 	var wg sync.WaitGroup
-	wg.Add(2)
-	go start_bot(telegramBotToken)
+	wg.Add(3)
+	bot := start_bot(telegramBotToken)
 	go login_habitika("NoPantsuMan", "P1zd4l1z")
+	go get_updates(bot)
 	wg.Wait()
 }
 
-func start_bot(token string) {
+func start_bot(token string) tgbotapi.BotAPI {
 	bot, err := tgbotapi.NewBotAPI(telegramBotToken)
 	if err != nil {
 		log.Panic(err)
 	}
 	log.Printf("Authorized with acc %s", bot.Self.UserName)
+	return *bot
+}
+
+func get_updates(bot tgbotapi.BotAPI){
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
@@ -60,7 +65,6 @@ func start_bot(token string) {
 			case "start":
 				msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Что хочешь сделать?")
 				msg.ReplyMarkup = CreateButtons()
-				// bot.Send(msg)
 			default:
 				msg.Text = "Напиши /start что бы выбрать действие"
 			}
